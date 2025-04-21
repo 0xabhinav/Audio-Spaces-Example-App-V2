@@ -1,3 +1,4 @@
+import { API } from '@huddle01/server-sdk/api';
 import { AccessToken, Role } from '@huddle01/server-sdk/auth';
 
 export const dynamic = 'force-dynamic';
@@ -38,6 +39,9 @@ const createToken = async (
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const api = new API({
+    apiKey: process.env.API_KEY!,
+  });
 
   const roomId = searchParams.get('roomId');
   const name = searchParams.get('name');
@@ -49,8 +53,15 @@ export async function GET(request: Request) {
   let token: string;
 
   try {
+    // const data = await api.getLivePartipantsDetails({ roomId });
+
+    // token = await createToken(
+    //   roomId,
+    //   data.length > 0 ? Role.LISTENER : Role.HOST,
+    //   name ?? 'Guest',
+    // );
     const response = await fetch(
-      `https://api.huddle01.com/api/v1/live-meeting/preview-peers?roomId=${roomId}`,
+      `https://infra-api.huddle01.workers.dev/api/v1/live-meeting/preview-peers?roomId=${roomId}`,
       {
         headers: {
           'x-api-key': process.env.API_KEY ?? '',
